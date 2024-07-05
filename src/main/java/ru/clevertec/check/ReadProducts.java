@@ -6,9 +6,18 @@ import java.io.IOException;
 
 public class ReadProducts {
     String[] parts;
+    Integer id;
+    String description;
+    Float price;
+    Boolean wholesale;
+
+
 
     public ReadProducts() {
-        parts = new String[5];
+        id = 0;
+        description = "";
+        price = 0.0f;
+        wholesale = false;
     }
 
     public String[] line_getter(int n) { // takes the line number and returns the array of instances separated by
@@ -42,10 +51,16 @@ public class ReadProducts {
     }
 
     public ReadProducts(String[] parts) {
-        this.parts = parts;
+        id = Integer.parseInt(parts[0]);
+        description = parts[1];
+        price = Float.parseFloat(parts[2]);
+        wholesale = Boolean.parseBoolean(parts[3]);
     }
 
     public ReadProducts(int n) { // the constructor that reads the n-th line and separates the instances
-        parts = line_getter(n);
+        id = Integer.parseInt(line_getter(n)[0]);
+        description = line_getter(n)[1];
+        price = Float.parseFloat(line_getter(n)[2]);
+        wholesale = Boolean.parseBoolean(line_getter(n)[3]);
     }
 }
