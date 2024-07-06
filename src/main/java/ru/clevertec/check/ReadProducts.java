@@ -1,4 +1,4 @@
-package main.java.ru.clevertec.check;
+package ru.clevertec.check;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,7 +13,7 @@ public class ReadProducts {
 
 
 
-    public ReadProducts() {
+    public ReadProducts() { //TODO check if it works correctly
         id = 0;
         description = "";
         price = 0.0f;

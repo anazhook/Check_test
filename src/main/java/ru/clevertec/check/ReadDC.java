@@ -1,4 +1,4 @@
-package main.java.ru.clevertec.check;
+package ru.clevertec.check;
 
 import java.util.HashMap; // import the HashMap class
 import java.io.BufferedReader;
