@@ -13,7 +13,7 @@ public class ReadProducts {
 
 
 
-    public ReadProducts() { //TODO check if it works correctly
+    public ReadProducts() {
         id = 0;
         description = "";
         price = 0.0f;

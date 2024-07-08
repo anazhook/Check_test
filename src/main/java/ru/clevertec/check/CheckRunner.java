@@ -4,11 +4,11 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+
 public class CheckRunner {
-//TODO solve the discount cards problem
     //TODO try to calculate the price with the discount
     public static void main(String[] args) throws IOException, MyException {
-        try (FileWriter receipt = new FileWriter("result.csv")) {
+        try (FileWriter receipt = new FileWriter("result.csv")) {// receipt file
 
             System.out.println("Date;Time");
             receipt.write("Date;Time");
@@ -18,19 +18,18 @@ public class CheckRunner {
             String dt = datetime.format(format);
             System.out.println(dt);
             receipt.write(dt);
-        } // receipt file
 
-        String application;
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        application = in.readLine();
+            String application;
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            application = in.readLine();
 
-        Receipt r;
-        r = new Receipt(application);
-        System.out.println(r.balance + " " + r.discountCard);
-        System.out.println(r.items);
-        for(int i = 0; i < r.items; i++){
-            System.out.println(r.lines[i]);
+            Receipt r;
+            r = new Receipt(application);
+            System.out.println(r.balance + " " + r.discountCard);
+            for (int i = 0; i < r.lines.length; i++) {
+                System.out.println(r.lines[i]);
+                receipt.write(r.lines[i]);
+            }
         }
-
     }
 }

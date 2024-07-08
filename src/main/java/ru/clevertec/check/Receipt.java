@@ -3,10 +3,11 @@ package ru.clevertec.check;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Receipt {
-    Integer items;
     Float balance;
     Integer discountCard;
     String[] lines;
@@ -14,19 +15,15 @@ public class Receipt {
 public Receipt(String application) throws MyException {
     HashMap<Integer, Integer> products = new HashMap<>();
     try {
-        products = productInput(application);
-        items = products.size();
-        lines = productLines(products);
+        products = productInput(application); //works
+        lines = productLines(products);//doesn't work
     } catch (MyException e) {
         throw new RuntimeException(e);
     }
 }
-
-//TODO product input calculates number of items incorrectly (that sucks)
-    public HashMap<Integer, Integer> productInput(String application) throws MyException {//devides application string into words and creates a hashmap of products
+ public HashMap<Integer, Integer> productInput(String application) throws MyException {//devides application string into words and creates a hashmap of products
         String[] parts = application.split(" ");
         int n = parts.length;
-
         if (n < 3) {
             throw new MyException("BAD REQUEST"); //no products
         }
@@ -54,15 +51,17 @@ public Receipt(String application) throws MyException {
     }
 
     public String[] productLines(HashMap<Integer, Integer> products) throws MyException {
-        String[] productL = new String[products.size() + 3];
-
-        for (Integer i : products.keySet()) { // going through the products and composing the line
-            productL[i] = products.get(i).toString() + ";";
-            Integer id = i;
-            ReadProducts rp = new ReadProducts(id);
+        String[] productL = new String[products.size()];
             DecimalFormat numberFormat = new DecimalFormat("#.00"); // decimal format
-            productL[i].concat(rp.description + ";" + numberFormat.format(rp.price).toString());
-            //TODO check how that line works
+        Set<Integer> productSet = products.keySet();
+        Integer i = productSet.size(); //number of item request (NOT number of item types)
+        ArrayList<Integer> keysarray = new ArrayList<Integer>(productSet); //product ids
+        Integer id;
+        Integer j = keysarray.size(); //number of product types
+        for(Integer k = 0; k < j; k++) {
+            id = keysarray.get(k); //id of the product in question
+            ReadProducts rp = new ReadProducts(id);
+            productL[k] = products.get(id).toString() + ";" + rp.description + ";" + numberFormat.format(rp.price).toString();//quantity, description and price
         }
         return productL;
     }

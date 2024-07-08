@@ -17,10 +17,11 @@ public class ReadDC {
         String line = reader.readLine();
         HashMap<Integer, Integer> disc_cards = new HashMap<Integer, Integer>();
         String[] parts;
-        while (reader.readLine() != null) {
-            line = reader.readLine();
+        line = reader.readLine();
+        while (line != null) {
             parts = line.split(";");
             disc_cards.put(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+            line = reader.readLine();
         }
         return disc_cards;
     }
