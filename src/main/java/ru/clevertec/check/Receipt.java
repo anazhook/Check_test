@@ -1,7 +1,7 @@
 package ru.clevertec.check;
 
-import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,19 +9,25 @@ import java.util.Set;
 
 public class Receipt {
     Float balance;
-    Integer discountCard;
-    String[] lines;
+    Integer discountCard;//discount card number
+    String[] lines;//product info that goes into receipt
+    Integer cardPercentage;//discount %
+    Float totalPrice;
+    Float totalDiscount;
+    Float totalWDiscount;
 
 public Receipt(String application) throws MyException {
     HashMap<Integer, Integer> products = new HashMap<>();
     try {
         products = productInput(application); //works
-        lines = productLines(products);//doesn't work
+        lines = productLines(products);
     } catch (MyException e) {
+        throw new RuntimeException(e);
+    } catch (IOException e) {
         throw new RuntimeException(e);
     }
 }
- public HashMap<Integer, Integer> productInput(String application) throws MyException {//devides application string into words and creates a hashmap of products
+ public HashMap<Integer, Integer> productInput(String application) throws MyException, IOException {//devides application string into words and creates a hashmap of products
         String[] parts = application.split(" ");
         int n = parts.length;
         if (n < 3) {
@@ -29,13 +35,13 @@ public Receipt(String application) throws MyException {
         }
 
         balance = Float.parseFloat(parts[n - 1]);
-        discountCard = Integer.parseInt(parts[n - 2]);
-
+        discountCard = Integer.parseInt(parts[n - 2]); //discount card number
+        ReadDC rdc = new ReadDC();
+        cardPercentage = rdc.percentage(discountCard); //discount card percentage
         HashMap<Integer, Integer> products = new HashMap<>();
         String[] pair;
         pair = parts[0].split("-");
         products.put(Integer.parseInt(pair[0]), Integer.parseInt(pair[1]));
-
 
         if (n > 3) {
             for (int i = 1; i < parts.length - 2; i++) {
@@ -58,10 +64,26 @@ public Receipt(String application) throws MyException {
         ArrayList<Integer> keysarray = new ArrayList<Integer>(productSet); //product ids
         Integer id;
         Integer j = keysarray.size(); //number of product types
+        Float total;
+        Float discount;
+        Integer percentage;
+        totalPrice = 0.0f;
+        totalDiscount = 0.0f;
+        totalWDiscount = 0.0f;
+
         for(Integer k = 0; k < j; k++) {
             id = keysarray.get(k); //id of the product in question
             ReadProducts rp = new ReadProducts(id);
-            productL[k] = products.get(id).toString() + ";" + rp.description + ";" + numberFormat.format(rp.price).toString();//quantity, description and price
+            total = products.get(id) * rp.price; //total (quantity * price)
+            if(rp.wholesale && products.get(id) > 5)
+                percentage = 10;
+            else percentage = cardPercentage;
+            discount = rp.price * percentage / 100;
+            totalPrice += total;
+            totalDiscount += discount;
+            totalWDiscount += total;
+            totalWDiscount -= discount;
+            productL[k] = products.get(id).toString() + ";" + rp.description + ";" + numberFormat.format(rp.price).toString() + ";" + numberFormat.format(total).toString() + ";" + numberFormat.format(discount).toString();//quantity, description, price, total and discount
         }
         return productL;
     }
