@@ -1,28 +1,33 @@
 package ru.clevertec.check;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class ReadProducts {
-    String[] parts;
+    //String[] parts;
     Integer id;
     String description;
     Float price;
     Boolean wholesale;
-
-
+    Integer quantity;
 
     public ReadProducts() {
         id = 0;
         description = "";
         price = 0.0f;
         wholesale = false;
+        quantity = 0;
     }
 
-    public String[] line_getter(int n) { // takes the line number and returns the array of instances separated by
+    public String[] line_getter(int n, FileWriter fr) throws IOException, MyException { // takes the line number and returns the array of instances separated by
         // semicolons
-        if (n > 0 && n < 22) {
+        int number_of_products = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/products.csv"))) {
+            String line1 = br.readLine();
+            while ((line1 = br.readLine()) != null) {
+                number_of_products++;
+            }
+        }
+        if (n > 0 && n < number_of_products) {
             try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/products.csv"))) {
                 String line;
                 int lineNumber = 0;
@@ -41,11 +46,9 @@ public class ReadProducts {
                         }
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         } else {
-            System.err.println("Invalid line number: " + String.valueOf(n));
+            throw new MyException("ERROR\nBAD REQUEST", fr);
         }
         return null;
     }
@@ -57,10 +60,10 @@ public class ReadProducts {
         wholesale = Boolean.parseBoolean(parts[3]);
     }
 
-    public ReadProducts(int n) { // the constructor that reads the n-th line and separates the instances
-        id = Integer.parseInt(line_getter(n)[0]);
-        description = line_getter(n)[1];
-        price = Float.parseFloat(line_getter(n)[2]);
-        wholesale = Boolean.parseBoolean(line_getter(n)[3]);
+    public ReadProducts(int n, FileWriter f) throws MyException, IOException { // the constructor that reads the n-th line and separates the instances
+        id = Integer.parseInt(line_getter(n, f)[0]);
+        description = line_getter(n, f)[1];
+        price = Float.parseFloat(line_getter(n, f)[2]);
+        wholesale = Boolean.parseBoolean(line_getter(n, f)[3]);
     }
 }

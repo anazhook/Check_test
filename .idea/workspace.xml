@@ -7,6 +7,8 @@
     <list default="true" id="f54c1be4-9c6a-450f-a630-82574bb70e05" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/CheckRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/CheckRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/MyException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/MyException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/ReadProducts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/ReadProducts.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/Receipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/clevertec/check/Receipt.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -41,6 +43,9 @@
     &quot;accountId&quot;: &quot;613878c9-69ff-4323-9b3e-7478586787f2&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -101,7 +106,9 @@
       <workItem from="1720412179017" duration="6931000" />
       <workItem from="1720525640348" duration="2481000" />
       <workItem from="1720534481447" duration="764000" />
-      <workItem from="1720543154321" duration="430000" />
+      <workItem from="1720543154321" duration="842000" />
+      <workItem from="1720610163683" duration="3452000" />
+      <workItem from="1720635910239" duration="11484000" />
     </task>
     <task id="LOCAL-00001" summary="Created the resource files">
       <option name="closed" value="true" />
@@ -175,7 +182,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720418421651</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Result file looks almost as it should">
+      <option name="closed" value="true" />
+      <created>1720543779264</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1720543779264</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -216,7 +231,8 @@
     <MESSAGE value="started working on Receipt class" />
     <MESSAGE value="fixed some bugs but found even more of them" />
     <MESSAGE value="fixed stuff and did some overall progress" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed stuff and did some overall progress" />
+    <MESSAGE value="Result file looks almost as it should" />
+    <option name="LAST_COMMIT_MESSAGE" value="Result file looks almost as it should" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

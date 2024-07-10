@@ -1,8 +1,10 @@
 package ru.clevertec.check;
 
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -15,29 +17,41 @@ public class Receipt {
     Float totalPrice;
     Float totalDiscount;
     Float totalWDiscount;
-
-public Receipt(String application) throws MyException {
+    Boolean hasDiscount;
+public Receipt(String application, FileWriter f) throws MyException, IOException {
     HashMap<Integer, Integer> products = new HashMap<>();
     try {
-        products = productInput(application); //works
-        lines = productLines(products);
+        products = productInput(application, f); //works
+        lines = productLines(products, f);
     } catch (MyException e) {
-        throw new RuntimeException(e);
-    } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new MyException("ERROR\nINTERNAL SERVER ERROR", f);
     }
 }
- public HashMap<Integer, Integer> productInput(String application) throws MyException, IOException {//devides application string into words and creates a hashmap of products
+ public HashMap<Integer, Integer> productInput(String application, FileWriter f) throws MyException, IOException {//divides application string into words and creates a hashmap of products
         String[] parts = application.split(" ");
         int n = parts.length;
-        if (n < 3) {
-            throw new MyException("BAD REQUEST"); //no products
+        if (n < 2) {
+            throw new MyException("ERROR\nBAD REQUEST", f); //no products
         }
+     ReadDC rdc = new ReadDC();
 
-        balance = Float.parseFloat(parts[n - 1]);
-        discountCard = Integer.parseInt(parts[n - 2]); //discount card number
-        ReadDC rdc = new ReadDC();
-        cardPercentage = rdc.percentage(discountCard); //discount card percentage
+        try {
+            balance = Float.parseFloat(parts[n - 1]);
+
+            hasDiscount = !parts[n - 2].contains("-");
+            if(hasDiscount) {
+                discountCard = Integer.parseInt(parts[n - 2]); //discount card number
+                cardPercentage = rdc.percentage(discountCard); //discount card percentage
+            }
+            else {
+                discountCard = 0;
+                cardPercentage = 0;
+            }
+
+
+        } catch (NumberFormatException e) {
+            throw new MyException("ERROR\nBAD REQUEST", f);
+        }
         HashMap<Integer, Integer> products = new HashMap<>();
         String[] pair;
         pair = parts[0].split("-");
@@ -56,14 +70,15 @@ public Receipt(String application) throws MyException {
         return products;
     }
 
-    public String[] productLines(HashMap<Integer, Integer> products) throws MyException {
+    public String[] productLines(HashMap<Integer, Integer> products, FileWriter f) throws MyException, IOException {
         String[] productL = new String[products.size()];
-            DecimalFormat numberFormat = new DecimalFormat("#.00"); // decimal format
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
+        DecimalFormat numberFormat = new DecimalFormat("#0.00"); // decimal format
+        numberFormat.setDecimalFormatSymbols(dfs);
         Set<Integer> productSet = products.keySet();
-        Integer i = productSet.size(); //number of item request (NOT number of item types)
-        ArrayList<Integer> keysarray = new ArrayList<Integer>(productSet); //product ids
-        Integer id;
-        Integer j = keysarray.size(); //number of product types
+        ArrayList<Integer> keysarray = new ArrayList<>(productSet); //product ids
+        int j = keysarray.size(); //number of product types
         Float total;
         Float discount;
         Integer percentage;
@@ -71,9 +86,10 @@ public Receipt(String application) throws MyException {
         totalDiscount = 0.0f;
         totalWDiscount = 0.0f;
 
-        for(Integer k = 0; k < j; k++) {
-            id = keysarray.get(k); //id of the product in question
-            ReadProducts rp = new ReadProducts(id);
+        for(int k = 0; k < j; k++) {
+            //id of the product in question
+            Integer id = keysarray.get(k);
+            ReadProducts rp = new ReadProducts(id, f);
             total = products.get(id) * rp.price; //total (quantity * price)
             if(rp.wholesale && products.get(id) > 5)
                 percentage = 10;
@@ -83,7 +99,7 @@ public Receipt(String application) throws MyException {
             totalDiscount += discount;
             totalWDiscount += total;
             totalWDiscount -= discount;
-            productL[k] = products.get(id).toString() + ";" + rp.description + ";" + numberFormat.format(rp.price).toString() + ";" + numberFormat.format(total).toString() + ";" + numberFormat.format(discount).toString();//quantity, description, price, total and discount
+            productL[k] = products.get(id).toString() + ";" + rp.description + ";" + numberFormat.format(rp.price) + "$;" + numberFormat.format(total).toString() + "$;" + numberFormat.format(discount).toString() + "$";//quantity, description, price, total and discount
         }
         return productL;
     }
